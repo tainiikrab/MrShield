@@ -164,6 +164,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 119
+  raycastLength: 0.06
 --- !u!1 &8940725542387029898
 GameObject:
   m_ObjectHideFlags: 0

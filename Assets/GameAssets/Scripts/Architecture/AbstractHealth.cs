@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class AbstractHealth : MonoBehaviour
 {
     private int _health;
+    public bool isDead { get; protected set; }
     [SerializeField] private int _maxHealth = 100;
 
     protected void InitializeHealth()

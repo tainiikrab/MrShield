@@ -9,7 +9,7 @@ public class Shooter : MonoBehaviour
     [SerializeField] private bool highArc = true;
 
     private List<Projectile> _projectiles = new();
-    public Transform target;
+    public Transform currentTarget;
     [SerializeField] private float shootDelay = 1f;
 
     private void Start()
@@ -21,29 +21,39 @@ public class Shooter : MonoBehaviour
     {
         while (true)
         {
-            Shoot();
+            Shoot(currentTarget, launchSpeed);
             yield return new WaitForSeconds(shootDelay);
         }
     }
 
 
-    public void Shoot()
+    public void Shoot(Transform target, float speed, Projectile projectile = null)
     {
         if (target == null || projectilePrefab == null) return;
 
-        var projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
-        _projectiles.Add(projectile);
+        if (projectile == null)
+        {
+            projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
+            _projectiles.Add(projectile);
+        }
 
-        if (TryCalculateLaunchVelocity(transform.position, target.position, launchSpeed, highArc, out var velocity))
+        if (TryCalculateLaunchVelocity(projectile.transform.position, target.position, speed, highArc,
+                out var velocity))
         {
             projectile.Initialize(target, this, velocity);
         }
         else
         {
             var dir = (target.position - transform.position).normalized;
-            projectile.Initialize(target, this, dir * launchSpeed);
+            projectile.Initialize(target, this, dir * speed);
         }
     }
+
+    public void ReflectProjectile(Projectile projectile)
+    {
+        Shoot(transform, launchSpeed, projectile);
+    }
+
 
     private bool TryCalculateLaunchVelocity(Vector3 start, Vector3 target, float speed, bool highArc,
         out Vector3 result)

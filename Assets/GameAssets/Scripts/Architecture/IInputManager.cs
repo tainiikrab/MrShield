@@ -24,4 +24,6 @@ public interface IInputManager
     }
 
     public Vector3 GetMovementAxis();
+
+    public bool IsFirePressed();
 }
