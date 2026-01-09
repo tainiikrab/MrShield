@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class AbstractHealth : MonoBehaviour
 {
-    private int _health;
+    private float _health;
     public bool isDead { get; protected set; }
     [SerializeField] private int _maxHealth = 100;
 
@@ -17,18 +17,35 @@ public abstract class AbstractHealth : MonoBehaviour
         InitializeHealth();
     }
 
-    public int Health => _health;
+    public float Health => _health;
 
-    public int MaxHealth => _maxHealth;
+    public float MaxHealth => _maxHealth;
 
     protected abstract void HandleDeath();
 
-    public event Action<int> OnDamaged;
+    public event Action<float> OnHealthChanged;
 
-    public virtual void TakeDamage(int damage)
+    public abstract void CalculateDamage(in DamageInfo damageInfo);
+
+    protected virtual void ApplyDamage(float finalDamage)
     {
-        _health = Mathf.Max(_health - damage, 0);
-        OnDamaged?.Invoke(_health);
+        if (isDead) return;
+        _health = Mathf.Max(_health - finalDamage, 0);
+        OnHealthChanged?.Invoke(_health);
         if (_health <= 0) HandleDeath();
+    }
+}
+
+public struct DamageInfo
+{
+    public float Value;
+    public bool IsReflected;
+    public bool IsCritical;
+
+    public DamageInfo(float value, bool isReflected = false, bool isCritical = false)
+    {
+        Value = value;
+        IsReflected = isReflected;
+        IsCritical = isCritical;
     }
 }

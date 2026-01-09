@@ -2,7 +2,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : AbstractDamageDealer
 {
     [SerializeField] private float lifeTime;
 
@@ -20,6 +20,7 @@ public class Projectile : MonoBehaviour
 
     [SerializeField] private float sphereRadius = 0.1f;
     private Vector3 _prevPos;
+
 
     public void Initialize(Transform target, Shooter shooter, Vector3 initialVelocity)
     {
@@ -81,18 +82,22 @@ public class Projectile : MonoBehaviour
 
     private void OnHit(RaycastHit hit)
     {
-        var reflector = hit.transform.GetComponentInParent<IProjectileReflector>();
-        if (reflector?.IsReflecting ?? false)
+        var health = hit.transform.GetComponentInParent<AbstractHealth>();
+        if (health == null) return;
+
+        var damageInfo = new DamageInfo(_damage);
+
+        var shield = hit.transform.GetComponentInParent<IShield>();
+        if (shield?.IsReflecting ?? false)
         {
             _shooter.ReflectProjectile(this);
-            return;
+            damageInfo.IsReflected = true;
         }
 
-        var health = hit.transform.GetComponentInParent<AbstractHealth>();
-        health?.TakeDamage(10);
-
+        DealDamage(health, damageInfo);
         Destroy(gameObject);
     }
+
 
     private IEnumerator DestroyProjectile()
     {

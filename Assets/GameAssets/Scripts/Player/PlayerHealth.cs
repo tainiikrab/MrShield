@@ -8,4 +8,9 @@ public class PlayerHealth : AbstractHealth
         isDead = true;
         Debug.Log("Player died");
     }
+
+    public override void CalculateDamage(in DamageInfo damageInfo)
+    {
+        ApplyDamage(damageInfo.Value);
+    }
 }

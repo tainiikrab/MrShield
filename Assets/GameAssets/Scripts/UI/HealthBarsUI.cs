@@ -17,17 +17,17 @@ public class HealthBarsUI : MonoBehaviour
         playerHealthBar.value = playerHealth.Health;
         shieldHealthBar.value = shieldHealth.Health;
 
-        playerHealth.OnDamaged += UpdatePlayerHealthBar;
-        shieldHealth.OnDamaged += UpdateShieldHealthBar;
+        playerHealth.OnHealthChanged += UpdatePlayerHealthBar;
+        shieldHealth.OnHealthChanged += UpdateShieldHealthBar;
     }
 
-    private void UpdatePlayerHealthBar(int health)
+    private void UpdatePlayerHealthBar(float health)
     {
         Tween.UISliderValue(playerHealthBar, playerHealthBar.value, health, 0.2f);
         // playerHealthBar.value = health;
     }
 
-    private void UpdateShieldHealthBar(int health)
+    private void UpdateShieldHealthBar(float health)
     {
         Tween.UISliderValue(shieldHealthBar, shieldHealthBar.value, health, 0.2f);
         shieldHealthBar.value = health;

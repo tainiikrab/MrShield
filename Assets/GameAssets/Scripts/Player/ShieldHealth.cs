@@ -8,4 +8,9 @@ public class ShieldHealth : AbstractHealth
         Debug.Log("Shield destroyed");
         isDead = true;
     }
+
+    public override void CalculateDamage(in DamageInfo damageInfo)
+    {
+        var damage = damageInfo.Value;
+    }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using VContainer;
 using PrimeTween;
 
-public class ShieldController : MonoBehaviour, IProjectileReflector
+public class ShieldController : MonoBehaviour, IShield
 {
     [Inject] private IInputManager _inputManager;
 
@@ -12,9 +12,16 @@ public class ShieldController : MonoBehaviour, IProjectileReflector
     private ShieldAnimator _shieldAnimator;
 
     public bool IsReflecting { get; private set; } = false;
+    public float KnockbackForce => knockbackForce;
 
     [SerializeField] private ShieldAnimatorConfig shieldAnimatorConfig;
     [SerializeField] private Transform shieldMesh;
+
+    [SerializeField] private float bumpCooldown = 0.5f;
+    private float _nextBumpTime;
+    private bool _isBumping = false;
+    [SerializeField] private float knockbackForce;
+
 
     private void Awake()
     {
@@ -28,15 +35,25 @@ public class ShieldController : MonoBehaviour, IProjectileReflector
         var x = Mathf.Min(0, -_inputManager.GetNormalizedPointerPosition().y) * 45f;
         _transform.rotation = Quaternion.Euler(x, y, 0);
 
-        if (_inputManager.IsFirePressed()) BumpShield();
+        if (_inputManager.IsFirePressed())
+            _ = BumpShield();
     }
 
 
-    private async void BumpShield()
+    private async UniTask BumpShield()
     {
+        if (_isBumping) return;
+        if (Time.time < _nextBumpTime) return;
+
         IsReflecting = true;
+        _isBumping = true;
+
         await _shieldAnimator.BumpAsync();
+
         IsReflecting = false;
+        _isBumping = false;
+
+        _nextBumpTime = Time.time + bumpCooldown;
     }
 }
 
