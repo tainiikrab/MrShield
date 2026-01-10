@@ -18,7 +18,10 @@ public class ShieldController : MonoBehaviour, IShield
     [SerializeField] private Transform shieldMesh;
 
     [SerializeField] private float bumpCooldown = 0.5f;
-    private float _nextBumpTime;
+
+    public float BumpCooldown => bumpCooldown;
+
+    public float NextBumpTime { get; private set; }
     private bool _isBumping = false;
     [SerializeField] private float knockbackForce;
 
@@ -43,7 +46,9 @@ public class ShieldController : MonoBehaviour, IShield
     private async UniTask BumpShield()
     {
         if (_isBumping) return;
-        if (Time.time < _nextBumpTime) return;
+        if (Time.time < NextBumpTime) return;
+
+        NextBumpTime = Time.time + bumpCooldown;
 
         IsReflecting = true;
         _isBumping = true;
@@ -52,8 +57,6 @@ public class ShieldController : MonoBehaviour, IShield
 
         IsReflecting = false;
         _isBumping = false;
-
-        _nextBumpTime = Time.time + bumpCooldown;
     }
 }
 
