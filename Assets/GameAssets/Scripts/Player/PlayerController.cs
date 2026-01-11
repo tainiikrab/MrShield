@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         var movement = _inputManager.GetMovementAxis();
         _characterController.SimpleMove(movement * speed);

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shooter : MonoBehaviour
+public class Shooter : MonoBehaviour, IHasTarget
 {
     [SerializeField] private Projectile projectilePrefab;
     [SerializeField] private float launchSpeed = 20f;
     [SerializeField] private bool highArc = true;
 
     private List<Projectile> _projectiles = new();
-    public Transform currentTarget;
+    public Transform Target { get; set; }
     [SerializeField] private float shootDelay = 1f;
 
     private void Start()
@@ -21,7 +21,7 @@ public class Shooter : MonoBehaviour
     {
         while (true)
         {
-            Shoot(currentTarget, launchSpeed);
+            Shoot(Target, launchSpeed);
             yield return new WaitForSeconds(shootDelay);
         }
     }

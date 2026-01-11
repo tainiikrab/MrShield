@@ -20,6 +20,6 @@ public class InputManager : IInputManager
 
     public bool IsFirePressed()
     {
-        return Input.GetButtonDown(FireButton);
+        return Input.GetButton(FireButton);
     }
 }

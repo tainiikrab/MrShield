@@ -2,7 +2,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Projectile : AbstractDamageDealer
+public class Projectile : AbstractDamageDealer, IHasTarget
 {
     [SerializeField] private float lifeTime;
 
@@ -11,7 +11,7 @@ public class Projectile : AbstractDamageDealer
 
     [SerializeField] private float raycastLength;
 
-    private Transform _target;
+    public Transform Target { get; set; }
     private Shooter _shooter;
     private Vector3 _velocity;
 
@@ -26,7 +26,7 @@ public class Projectile : AbstractDamageDealer
     {
         _time = 0f;
         _startPos = transform.position;
-        _target = target;
+        Target = target;
         _shooter = shooter;
         _velocity = initialVelocity;
         StartCoroutine(DestroyProjectile());

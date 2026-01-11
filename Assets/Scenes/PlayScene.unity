@@ -463,7 +463,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 366199356}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -828,6 +828,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 419184972}
+    - target: {fileID: 1128160139173187419, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
+      propertyPath: knockbackPropagationForce
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 6198668111102484787, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
       propertyPath: m_Name
       value: WalkingEnemy (7)
@@ -897,6 +901,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 419184972}
+    - target: {fileID: 1128160139173187419, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
+      propertyPath: knockbackPropagationForce
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 6198668111102484787, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
       propertyPath: m_Name
       value: WalkingEnemy (8)
@@ -1063,6 +1071,134 @@ Transform:
   m_Children: []
   m_Father: {fileID: 419184972}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &520547143
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 520547147}
+  - component: {fileID: 520547146}
+  - component: {fileID: 520547145}
+  - component: {fileID: 520547144}
+  - component: {fileID: 520547148}
+  m_Layer: 0
+  m_Name: EnemySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &520547144
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520547143}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &520547145
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520547143}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &520547146
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520547143}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &520547147
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520547143}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 17.51, z: 25.9776}
+  m_LocalScale: {x: 8.14, y: 1, z: 16.66}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &520547148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520547143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c94206535cf3a90438c94644b7cbaac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+  enemyPrefab: {fileID: 7172157663358118814, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
+  spawnRate: 4
+  spawnAmount: 4
+  <Target>k__BackingField: {fileID: 419184972}
 --- !u!1 &607758121
 GameObject:
   m_ObjectHideFlags: 0
@@ -1318,6 +1454,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 419184972}
+    - target: {fileID: 1128160139173187419, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
+      propertyPath: knockbackPropagationForce
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 6198668111102484787, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
       propertyPath: m_Name
       value: WalkingEnemy (1)
@@ -1387,6 +1527,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 419184972}
+    - target: {fileID: 1128160139173187419, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
+      propertyPath: knockbackPropagationForce
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 6198668111102484787, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
       propertyPath: m_Name
       value: WalkingEnemy (2)
@@ -1894,7 +2038,6 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1177535730397600769, guid: e22bf7804a532ad44a25170425f96871, type: 3}
   launchSpeed: 30
   highArc: 0
-  currentTarget: {fileID: 419184972}
   shootDelay: 1
 --- !u!1 &1323795740
 GameObject:
@@ -2023,6 +2166,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 419184972}
+    - target: {fileID: 1128160139173187419, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
+      propertyPath: knockbackPropagationForce
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 6198668111102484787, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
       propertyPath: m_Name
       value: WalkingEnemy (4)
@@ -2332,6 +2479,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 419184972}
+    - target: {fileID: 1128160139173187419, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
+      propertyPath: knockbackPropagationForce
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 6198668111102484787, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
       propertyPath: m_Name
       value: WalkingEnemy (3)
@@ -2401,6 +2552,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 419184972}
+    - target: {fileID: 1128160139173187419, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
+      propertyPath: knockbackPropagationForce
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 6198668111102484787, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
       propertyPath: m_Name
       value: WalkingEnemy (5)
@@ -2581,6 +2736,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 419184972}
+    - target: {fileID: 1128160139173187419, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
+      propertyPath: knockbackPropagationForce
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 6198668111102484787, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
       propertyPath: m_Name
       value: WalkingEnemy (6)
@@ -3523,6 +3682,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 419184972}
+    - target: {fileID: 1128160139173187419, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
+      propertyPath: knockbackPropagationForce
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 3421037431481642042, guid: 9547f3d0aee3a434bbd7083fb946a67f, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -3599,3 +3762,4 @@ SceneRoots:
   - {fileID: 494452465}
   - {fileID: 1442470069}
   - {fileID: 1659099128}
+  - {fileID: 520547147}

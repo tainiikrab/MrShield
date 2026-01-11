@@ -324,7 +324,6 @@ GameObject:
   - component: {fileID: 7172157663358118814}
   - component: {fileID: 4850570888937784934}
   - component: {fileID: 1128160139173187419}
-  - component: {fileID: 9209775389141707379}
   m_Layer: 0
   m_Name: WalkingEnemy
   m_TagString: Untagged
@@ -386,38 +385,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WalkingEnemy
   _damage: 10
-  target: {fileID: 0}
-  speed: 1
+  speed: 5
   _body: {fileID: 4975850075482992093}
-  randomSpeedDeviation: 0.5
+  randomSpeedDeviation: 1.5
   randomDirectionDeviation: 1.5
   damageableLayers:
     serializedVersion: 2
     m_Bits: 576
   contactCooldown: 0.5
+  damageDelay: 0.2
   knockbackDamping: 6
   minKnockbackThreshold: 0.05
---- !u!65 &9209775389141707379
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6198668111102484787}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 128
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 0.7, y: 1, z: 0.7}
-  m_Center: {x: 0, y: 0, z: 0}
+  knockbackPropagationForce: 0.7
 --- !u!1 &7051003211791365462
 GameObject:
   m_ObjectHideFlags: 0

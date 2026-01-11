@@ -6,27 +6,31 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(CharacterController))]
-public class WalkingEnemy : AbstractDamageDealer
+public class WalkingEnemy : AbstractDamageDealer, IHasTarget
 {
-    [SerializeField] private Transform target;
+    [Header("Movement")] public Transform Target { get; set; }
     [SerializeField] private float speed;
     [SerializeField] private Transform _body;
-    private CharacterController _characterController;
-
     [SerializeField] private float randomSpeedDeviation;
     [SerializeField] private float randomDirectionDeviation;
 
-    [SerializeField] private LayerMask damageableLayers;
+    [Space] [Header("Combat")] [SerializeField]
+    private LayerMask damageableLayers;
+
     [SerializeField] private float contactCooldown = 0.5f;
-    private readonly Dictionary<Transform, float> _lastHitTime = new();
-
-    [SerializeField] private float knockbackDamping = 6f;
-    [SerializeField] private float minKnockbackThreshold = 0.05f;
-    private Vector3 _knockbackVelocity;
-
-    private Vector3 _directionDeviation;
-
     [SerializeField] private float damageDelay = 0.2f;
+
+    [Space] [Header("Knockback")] [SerializeField]
+    private float knockbackDamping = 6f;
+
+    [SerializeField] private float minKnockbackThreshold = 0.05f;
+    [SerializeField] private float knockbackPropagationForce = 0.7f;
+
+    private Vector3 _knockbackVelocity;
+    private Vector3 _directionDeviation;
+    private CharacterController _characterController;
+
+    private readonly Dictionary<Transform, float> _lastHitTime = new();
     private readonly Dictionary<Transform, CancellationTokenSource> _pendingDamageCts = new();
 
     private void Awake()
@@ -40,8 +44,8 @@ public class WalkingEnemy : AbstractDamageDealer
 
     private void Update()
     {
-        _direction = (target.position + _directionDeviation - transform.position).normalized;
-        _body.LookAt(target.position + _directionDeviation);
+        _direction = (Target.position + _directionDeviation - transform.position).normalized;
+        _body.LookAt(Target.position + _directionDeviation);
         _characterController.SimpleMove(speed * _direction);
 
         if (_knockbackVelocity.sqrMagnitude > minKnockbackThreshold * minKnockbackThreshold)
@@ -55,6 +59,12 @@ public class WalkingEnemy : AbstractDamageDealer
     {
         if (hit.collider.transform.IsChildOf(transform)) return;
 
+        if (_knockbackVelocity.sqrMagnitude > minKnockbackThreshold * minKnockbackThreshold)
+        {
+            var otherEnemy = hit.collider.GetComponentInParent<WalkingEnemy>();
+            if (otherEnemy != null && otherEnemy != this) PropagateKnockbackToEnemy(otherEnemy);
+        }
+
         var hitLayerMask = 1 << hit.gameObject.layer;
         var allowed = (damageableLayers.value & hitLayerMask) != 0;
         if (!allowed) return;
@@ -66,7 +76,7 @@ public class WalkingEnemy : AbstractDamageDealer
 
         var shield = hit.collider.GetComponentInParent<IShield>();
 
-        if (shield != null && shield.IsReflecting) ApplyKnockback(shield, ref damageInfo);
+        if (shield != null && shield.IsReflecting) CalculateShieldKnockback(shield, ref damageInfo);
 
         var t = health.transform;
         if (_lastHitTime.TryGetValue(t, out var last) && Time.time - last < contactCooldown) return;
@@ -77,13 +87,12 @@ public class WalkingEnemy : AbstractDamageDealer
         //  _lastHitTime[t] = Time.time;
     }
 
-    private void ApplyKnockback(IShield shield, ref DamageInfo damageInfo)
+    private void CalculateShieldKnockback(IShield shield, ref DamageInfo damageInfo)
     {
         var shieldT = (shield as Component)?.transform;
         if (shieldT == null) return;
 
         var shieldForward = shieldT.forward;
-
         shieldForward.y = 0f;
         if (shieldForward.sqrMagnitude < 0.0001f)
         {
@@ -98,9 +107,28 @@ public class WalkingEnemy : AbstractDamageDealer
         // var knockbackDir = shieldForward * side;
         var knockbackDir = shieldForward;
         var force = shield.KnockbackForce;
-        _knockbackVelocity = knockbackDir * force;
 
+        ApplyKnockback(knockbackDir, force);
         damageInfo.IsReflected = true;
+    }
+
+    private void PropagateKnockbackToEnemy(WalkingEnemy otherEnemy)
+    {
+        var knockbackDirection = _knockbackVelocity.normalized;
+        knockbackDirection.y = 0f;
+        knockbackDirection.Normalize();
+
+        var propagatedForce = _knockbackVelocity.magnitude * knockbackPropagationForce;
+        otherEnemy.ApplyKnockback(knockbackDirection, propagatedForce);
+
+        _knockbackVelocity *= 1f - knockbackPropagationForce * 0.2f;
+    }
+
+    public void ApplyKnockback(Vector3 direction, float force)
+    {
+        direction.y = 0f;
+        direction.Normalize();
+        _knockbackVelocity = direction * force;
     }
 
     private async UniTaskVoid DelayedDamage(AbstractHealth health, DamageInfo damageInfo, float delay)
