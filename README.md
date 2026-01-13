@@ -1,1 +1,1 @@
-# Casual runnder game with shield mechanics. In development.
+# Casual runner game with shield mechanics. In development.
