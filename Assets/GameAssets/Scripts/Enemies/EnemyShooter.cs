@@ -1,19 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VContainer;
 
-public class Shooter : MonoBehaviour, IHasTarget
+public class EnemyShooter : MonoBehaviour, IHasTarget
 {
     [SerializeField] private Projectile projectilePrefab;
     [SerializeField] private float launchSpeed = 20f;
     [SerializeField] private bool highArc = true;
 
     private List<Projectile> _projectiles = new();
-    public Transform Target { get; set; }
+    [Inject] public Transform Target { get; set; }
     [SerializeField] private float shootDelay = 1f;
 
     private void Start()
     {
+        Debug.Log(Target.name);
         StartCoroutine(ShootingCoroutine());
     }
 
@@ -29,7 +31,17 @@ public class Shooter : MonoBehaviour, IHasTarget
 
     public void Shoot(Transform target, float speed, Projectile projectile = null)
     {
-        if (target == null || projectilePrefab == null) return;
+        if (target == null)
+        {
+            Debug.LogWarning("No target");
+            return;
+        }
+
+        if (projectilePrefab == null)
+        {
+            Debug.LogWarning("No projectile prefab");
+            return;
+        }
 
         if (projectile == null)
         {

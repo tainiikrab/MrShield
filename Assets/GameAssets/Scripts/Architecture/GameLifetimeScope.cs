@@ -4,11 +4,12 @@ using VContainer.Unity;
 
 public class GameLifetimeScope : LifetimeScope
 {
-    // [SerializeField] private ShieldController shieldController;
+    [SerializeField] private Transform playerTarger;
 
     protected override void Configure(IContainerBuilder builder)
     {
         // builder.RegisterComponent(shieldController);
         builder.Register<IInputManager, InputManager>(Lifetime.Singleton);
+        builder.RegisterInstance(playerTarger);
     }
 }

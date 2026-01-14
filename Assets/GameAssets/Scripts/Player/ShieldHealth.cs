@@ -6,20 +6,15 @@ public class ShieldHealth : AbstractHealth
 
     protected override void HandleDeath()
     {
-        if (isDead) return;
+        base.HandleDeath();
         Debug.Log("Shield destroyed");
-        isDead = true;
     }
 
     public override void CalculateDamage(in DamageInfo damageInfo)
     {
         var damage = damageInfo.Value;
-        if (damageInfo.IsReflected)
-        {
-            damage *= 1 - reflectionDamageMitigation;
-            Debug.Log("Shield reflected damage");
-        }
-
+        if (damageInfo.IsReflected) damage *= 1 - reflectionDamageMitigation;
+        // Debug.Log("Shield reflected damage");
         ApplyDamage(damage);
     }
 }

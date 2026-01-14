@@ -6,7 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(CharacterController))]
-public class WalkingEnemy : AbstractDamageDealer, IHasTarget
+public class WalkingEnemyController : AbstractDamageDealer, IHasTarget
 {
     [Header("Movement")] public Transform Target { get; set; }
     [SerializeField] private float speed;
@@ -61,7 +61,7 @@ public class WalkingEnemy : AbstractDamageDealer, IHasTarget
 
         if (_knockbackVelocity.sqrMagnitude > minKnockbackThreshold * minKnockbackThreshold)
         {
-            var otherEnemy = hit.collider.GetComponentInParent<WalkingEnemy>();
+            var otherEnemy = hit.collider.GetComponentInParent<WalkingEnemyController>();
             if (otherEnemy != null && otherEnemy != this) PropagateKnockbackToEnemy(otherEnemy);
         }
 
@@ -112,14 +112,14 @@ public class WalkingEnemy : AbstractDamageDealer, IHasTarget
         damageInfo.IsReflected = true;
     }
 
-    private void PropagateKnockbackToEnemy(WalkingEnemy otherEnemy)
+    private void PropagateKnockbackToEnemy(WalkingEnemyController otherEnemyController)
     {
         var knockbackDirection = _knockbackVelocity.normalized;
         knockbackDirection.y = 0f;
         knockbackDirection.Normalize();
 
         var propagatedForce = _knockbackVelocity.magnitude * knockbackPropagationForce;
-        otherEnemy.ApplyKnockback(knockbackDirection, propagatedForce);
+        otherEnemyController.ApplyKnockback(knockbackDirection, propagatedForce);
 
         _knockbackVelocity *= 1f - knockbackPropagationForce * 0.2f;
     }

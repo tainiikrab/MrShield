@@ -21,9 +21,15 @@ public abstract class AbstractHealth : MonoBehaviour
 
     public float MaxHealth => _maxHealth;
 
-    protected abstract void HandleDeath();
+    protected virtual void HandleDeath()
+    {
+        if (isDead) return;
+        isDead = true;
+        OnDeath?.Invoke();
+    }
 
     public event Action<float> OnHealthChanged;
+    public event Action OnDeath;
 
     public abstract void CalculateDamage(in DamageInfo damageInfo);
 

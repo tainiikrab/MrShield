@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5632947874399293451}
   - component: {fileID: 1477387553055480081}
   - component: {fileID: 5437270234523147733}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cylinder (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 1815510176108396698}
   - component: {fileID: 2472124987695115137}
   - component: {fileID: 409568022191709005}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,7 +214,7 @@ GameObject:
   - component: {fileID: 5357684685774124499}
   - component: {fileID: 5989717508099525793}
   - component: {fileID: 3421037431481642042}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -324,7 +324,7 @@ GameObject:
   - component: {fileID: 7172157663358118814}
   - component: {fileID: 4850570888937784934}
   - component: {fileID: 1128160139173187419}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: WalkingEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -409,7 +409,7 @@ GameObject:
   - component: {fileID: 7839126960588568677}
   - component: {fileID: 1910071259405820220}
   - component: {fileID: 9008822226710010176}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -519,7 +519,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4975850075482992093}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}

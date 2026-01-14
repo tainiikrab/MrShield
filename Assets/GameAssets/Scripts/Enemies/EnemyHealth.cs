@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 
-public class PlayerHealth : AbstractHealth
+public class EnemyHealth : AbstractHealth
 {
     protected override void HandleDeath()
     {
         base.HandleDeath();
+        Destroy(gameObject);
     }
 
     public override void CalculateDamage(in DamageInfo damageInfo)

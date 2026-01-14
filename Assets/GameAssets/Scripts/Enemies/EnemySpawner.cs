@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VContainer;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(BoxCollider))]
@@ -22,8 +23,7 @@ public class EnemySpawner : MonoBehaviour, IHasTarget
 
     private CancellationTokenSource _spawnCts;
 
-    [field: SerializeField] public Transform Target { get; set; }
-
+    [Inject] public Transform Target { get; set; }
 
     private void Awake()
     {
