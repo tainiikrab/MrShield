@@ -85,12 +85,15 @@ public class Projectile : AbstractDamageDealer, IHasTarget
         var health = hit.transform.GetComponentInParent<AbstractHealth>();
         if (health == null) return;
 
-        var damageInfo = new DamageInfo(_damage);
+        var damageInfo = new DamageInfo(_damage, transform, health.transform);
 
         var shield = hit.transform.GetComponentInParent<IShield>();
         if (shield?.IsReflecting ?? false)
         {
-            _enemyShooter.ReflectProjectile(this);
+            if (_enemyShooter != null)
+                _enemyShooter.ReflectProjectile(this);
+            else
+                Destroy(gameObject);
             damageInfo.IsReflected = true;
             return;
         }

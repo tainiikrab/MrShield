@@ -18,12 +18,14 @@ public class ShieldController : MonoBehaviour, IShield
 
     [SerializeField] private float bumpCooldown = 0.5f;
     [SerializeField] private float bumpDuration = 0.2f;
+    [SerializeField] private float knockbackDamage = 10;
 
     private Transform _transform;
     private ShieldAnimator _shieldAnimator;
     private AbstractHealth _health;
     public bool IsReflecting { get; private set; } = false;
     public float KnockbackForce => knockbackForce;
+    public float KnockbackDamage => knockbackDamage;
     public float BumpCooldown => bumpCooldown;
     public float NextBumpTime { get; private set; }
     private bool _isBumping = false;

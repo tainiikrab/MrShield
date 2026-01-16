@@ -6,7 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(CharacterController))]
-public class WalkingEnemyController : AbstractDamageDealer, IHasTarget
+public class WalkingEnemyController : AbstractDamageDealer, IHasTarget, IKnockbackable
 {
     [Header("Movement")] public Transform Target { get; set; }
     [SerializeField] private float speed;
@@ -33,27 +33,32 @@ public class WalkingEnemyController : AbstractDamageDealer, IHasTarget
     private readonly Dictionary<Transform, float> _lastHitTime = new();
     private readonly Dictionary<Transform, CancellationTokenSource> _pendingDamageCts = new();
 
+    private AbstractHealth _thisHealth;
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
         speed += Random.Range(-randomSpeedDeviation, randomSpeedDeviation);
         _directionDeviation = Random.insideUnitSphere * randomDirectionDeviation;
+        _thisHealth = GetComponent<AbstractHealth>();
     }
 
     private Vector3 _direction;
 
     private void Update()
     {
-        _direction = (Target.position + _directionDeviation - transform.position).normalized;
-        _body.LookAt(Target.position + _directionDeviation);
-        _characterController.SimpleMove(speed * _direction);
-
         if (_knockbackVelocity.sqrMagnitude > minKnockbackThreshold * minKnockbackThreshold)
         {
             _characterController.Move(_knockbackVelocity * Time.deltaTime);
             _knockbackVelocity = Vector3.Lerp(_knockbackVelocity, Vector3.zero, knockbackDamping * Time.deltaTime);
         }
+
+        if (_thisHealth.isDead) return;
+        _direction = (Target.position + _directionDeviation - transform.position).normalized;
+        _body.LookAt(Target.position + _directionDeviation);
+        _characterController.SimpleMove(speed * _direction);
     }
+
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
@@ -72,7 +77,7 @@ public class WalkingEnemyController : AbstractDamageDealer, IHasTarget
         var health = hit.collider.GetComponentInParent<AbstractHealth>();
         if (health == null) return;
 
-        var damageInfo = new DamageInfo(_damage);
+        var damageInfo = new DamageInfo(_damage, transform, health.transform);
 
         var shield = hit.collider.GetComponentInParent<IShield>();
 
@@ -86,6 +91,9 @@ public class WalkingEnemyController : AbstractDamageDealer, IHasTarget
 
         //  _lastHitTime[t] = Time.time;
     }
+
+    private float _receivedKnockbackDamage = 0;
+    private float _receivedKnockbackForce = 0;
 
     private void CalculateShieldKnockback(IShield shield, ref DamageInfo damageInfo)
     {
@@ -106,9 +114,15 @@ public class WalkingEnemyController : AbstractDamageDealer, IHasTarget
         // var side = Mathf.Sign(Vector3.Dot(transform.position - shieldT.position, shieldForward));
         // var knockbackDir = shieldForward * side;
         var knockbackDir = shieldForward;
-        var force = shield.KnockbackForce;
 
-        ApplyKnockback(knockbackDir, force);
+        _receivedKnockbackDamage = shield.KnockbackDamage;
+        _receivedKnockbackForce = shield.KnockbackForce;
+
+        var receivedDamageInfo = new DamageInfo(_receivedKnockbackDamage, shieldT, transform);
+
+        ApplyKnockback(knockbackDir, _receivedKnockbackForce, receivedDamageInfo);
+
+
         damageInfo.IsReflected = true;
     }
 
@@ -119,15 +133,21 @@ public class WalkingEnemyController : AbstractDamageDealer, IHasTarget
         knockbackDirection.Normalize();
 
         var propagatedForce = _knockbackVelocity.magnitude * knockbackPropagationForce;
-        otherEnemyController.ApplyKnockback(knockbackDirection, propagatedForce);
+
+        var propagatedDamage = _receivedKnockbackDamage * propagatedForce / _receivedKnockbackForce;
+
+        var propagatedDamageInfo = new DamageInfo(propagatedDamage, transform, otherEnemyController.transform);
+
+        otherEnemyController.ApplyKnockback(knockbackDirection, propagatedForce, propagatedDamageInfo);
 
         _knockbackVelocity *= 1f - knockbackPropagationForce * 0.2f;
     }
 
-    public void ApplyKnockback(Vector3 direction, float force)
+    public void ApplyKnockback(Vector3 direction, float force, DamageInfo damageInfo)
     {
         direction.y = 0f;
         direction.Normalize();
+        _thisHealth.CalculateDamage(damageInfo);
         _knockbackVelocity = direction * force;
     }
 

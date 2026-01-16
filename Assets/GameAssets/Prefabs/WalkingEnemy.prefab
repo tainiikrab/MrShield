@@ -324,6 +324,7 @@ GameObject:
   - component: {fileID: 7172157663358118814}
   - component: {fileID: 4850570888937784934}
   - component: {fileID: 1128160139173187419}
+  - component: {fileID: -4619561681856979758}
   m_Layer: 10
   m_Name: WalkingEnemy
   m_TagString: Untagged
@@ -397,6 +398,21 @@ MonoBehaviour:
   knockbackDamping: 6
   minKnockbackThreshold: 0.05
   knockbackPropagationForce: 0.7
+--- !u!114 &-4619561681856979758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6198668111102484787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 531eb6f1e2bf49a58beb6401e4bfc779, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  _maxHealth: 20
+  deathDuration: 0.2
+  animatedTransform: {fileID: 4975850075482992093}
 --- !u!1 &7051003211791365462
 GameObject:
   m_ObjectHideFlags: 0

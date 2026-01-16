@@ -5,16 +5,12 @@ public abstract class AbstractHealth : MonoBehaviour
 {
     private float _health;
     public bool isDead { get; protected set; }
-    [SerializeField] private int _maxHealth = 100;
+    [SerializeField] protected int _maxHealth = 100;
 
-    protected void InitializeHealth()
+
+    protected virtual void Awake()
     {
         _health = _maxHealth;
-    }
-
-    protected void Awake()
-    {
-        InitializeHealth();
     }
 
     public float Health => _health;
@@ -47,10 +43,15 @@ public struct DamageInfo
     public float Value;
     public bool IsReflected;
     public bool IsCritical;
+    public Transform Source;
+    public Transform Target;
 
-    public DamageInfo(float value, bool isReflected = false, bool isCritical = false)
+    public DamageInfo(float value, Transform source, Transform target, bool isReflected = false,
+        bool isCritical = false)
     {
         Value = value;
+        Source = source;
+        Target = target;
         IsReflected = isReflected;
         IsCritical = isCritical;
     }
