@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 
-public class EnemyShooter : MonoBehaviour, IHasTarget
+public class ShootingEnemy : MonoBehaviour, IHasTarget
 {
     [SerializeField] private Projectile projectilePrefab;
     [SerializeField] private float launchSpeed = 20f;
     [SerializeField] private bool highArc = true;
+
+    [SerializeField] private Transform shootingPoint;
 
     private List<Projectile> _projectiles = new();
     [Inject] public Transform Target { get; set; }
@@ -45,7 +47,7 @@ public class EnemyShooter : MonoBehaviour, IHasTarget
 
         if (projectile == null)
         {
-            projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
+            projectile = Instantiate(projectilePrefab, shootingPoint.position, transform.rotation);
             _projectiles.Add(projectile);
         }
 

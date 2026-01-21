@@ -12,7 +12,7 @@ public class Projectile : AbstractDamageDealer, IHasTarget
     [SerializeField] private float raycastLength;
 
     public Transform Target { get; set; }
-    private EnemyShooter _enemyShooter;
+    private ShootingEnemy _shootingEnemy;
     private Vector3 _velocity;
 
     private Vector3 _startPos;
@@ -22,12 +22,12 @@ public class Projectile : AbstractDamageDealer, IHasTarget
     private Vector3 _prevPos;
 
 
-    public void Initialize(Transform target, EnemyShooter enemyShooter, Vector3 initialVelocity)
+    public void Initialize(Transform target, ShootingEnemy shootingEnemy, Vector3 initialVelocity)
     {
         _time = 0f;
         _startPos = transform.position;
         Target = target;
-        _enemyShooter = enemyShooter;
+        _shootingEnemy = shootingEnemy;
         _velocity = initialVelocity;
         StartCoroutine(DestroyProjectile());
         _prevPos = transform.position;
@@ -90,8 +90,8 @@ public class Projectile : AbstractDamageDealer, IHasTarget
         var shield = hit.transform.GetComponentInParent<IShield>();
         if (shield?.IsReflecting ?? false)
         {
-            if (_enemyShooter != null)
-                _enemyShooter.ReflectProjectile(this);
+            if (_shootingEnemy != null)
+                _shootingEnemy.ReflectProjectile(this);
             else
                 Destroy(gameObject);
             damageInfo.IsReflected = true;
@@ -106,7 +106,7 @@ public class Projectile : AbstractDamageDealer, IHasTarget
     private IEnumerator DestroyProjectile()
     {
         yield return new WaitForSeconds(lifeTime);
-        _enemyShooter.RemoveProjectile(this);
+        _shootingEnemy.RemoveProjectile(this);
         Destroy(gameObject);
     }
 }

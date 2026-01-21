@@ -21,21 +21,25 @@ public class EnemyHealth : AbstractHealth
         AnimateDeath();
     }
 
+    private Sequence _deathSeq;
+
     private void AnimateDeath()
     {
         if (_hitSeq.isAlive)
             _hitSeq.Stop();
 
-        var seq = Sequence.Create();
-        seq.Chain(Tween.PositionY(transform, transform.position.y - 0.55f, 0.14f, Ease.InCubic));
-        seq.Group(Tween.ShakeLocalPosition(transform, new Vector3(0.08f, 0.04f, 0f), 0.10f, 22, true));
-        seq.Group(Tween.Scale(transform, new Vector3(1.35f, 0.6f, 1f), 0.08f, Ease.OutQuad));
-        seq.Chain(Tween.Scale(transform, 0f, 0.16f, Ease.InBack));
+        _deathSeq = Sequence.Create();
+        _deathSeq.Chain(Tween.PositionY(transform, transform.position.y - 0.55f, 0.14f, Ease.InCubic));
+        _deathSeq.Group(Tween.ShakeLocalPosition(transform, new Vector3(0.08f, 0.04f, 0f), 0.10f, 22, true));
+        _deathSeq.Group(Tween.Scale(transform, new Vector3(1.35f, 0.6f, 1f), 0.08f, Ease.OutQuad));
+        _deathSeq.Chain(Tween.Scale(transform, 0f, 0.16f, Ease.InBack));
 
-        seq.ChainCallback(() => Destroy(gameObject));
+        _deathSeq.OnComplete(() => StartCoroutine(DestroyAtTheEndOfFrame()));
     }
 
     private Sequence _hitSeq;
+
+    [SerializeField] private Vector3 hitScale = new(1.1f, 0.7f, 1.1f);
 
     private void AnimateHit()
     {
@@ -44,12 +48,8 @@ public class EnemyHealth : AbstractHealth
 
         _hitSeq = Sequence.Create();
 
-        _hitSeq.Group(Tween.PunchLocalPosition(
-            animatedTransform,
-            (Vector3.up * 0.05f + Vector3.right * 0.04f) * (1f + 2.4f),
-            0.5f,
-            18
-        ));
+        _hitSeq.Group(Tween.Scale(transform, 0.6f, 0.1f));
+        _hitSeq.Chain(Tween.Scale(transform, 1f, 0.1f));
     }
 
     public override void CalculateDamage(in DamageInfo inDamageInfo)
@@ -64,5 +64,13 @@ public class EnemyHealth : AbstractHealth
     {
         yield return waitEndOfFrame;
         Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (_deathSeq.isAlive)
+            _deathSeq.Stop();
+        if (_hitSeq.isAlive)
+            _hitSeq.Stop();
     }
 }

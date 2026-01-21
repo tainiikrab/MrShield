@@ -413,6 +413,7 @@ MonoBehaviour:
   _maxHealth: 20
   deathDuration: 0.2
   animatedTransform: {fileID: 4975850075482992093}
+  hitScale: {x: 0.9, y: 0.9, z: 0.9}
 --- !u!1 &7051003211791365462
 GameObject:
   m_ObjectHideFlags: 0
