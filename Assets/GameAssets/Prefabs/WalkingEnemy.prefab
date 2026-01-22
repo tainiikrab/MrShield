@@ -536,6 +536,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4975850075482992093}
+  - component: {fileID: 7851221018627850215}
   m_Layer: 10
   m_Name: Body
   m_TagString: Untagged
@@ -562,3 +563,20 @@ Transform:
   - {fileID: 2226461414234011852}
   m_Father: {fileID: 7172157663358118814}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!111 &7851221018627850215
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8712622595265346252}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 7400000, guid: e4c7c8fde4db4fc45869d686cefdf7dd, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: e4c7c8fde4db4fc45869d686cefdf7dd, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0

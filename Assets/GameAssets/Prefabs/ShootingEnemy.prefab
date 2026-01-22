@@ -51,6 +51,9 @@ MonoBehaviour:
   highArc: 0
   shootingPoint: {fileID: 341653544236584824}
   shootDelay: 1
+  minimalWalkingDistance: 15
+  maximalWalkingDistance: 30
+  walkingSpeed: 12
 --- !u!114 &3243679927640305633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,7 +137,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: dc22f69ddc4750b45a711dbf12413eb4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -189,6 +192,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9179952387749800357}
+  - component: {fileID: 5683387082430007890}
   m_Layer: 10
   m_Name: Body
   m_TagString: Untagged
@@ -214,6 +218,23 @@ Transform:
   - {fileID: 341653544236584824}
   m_Father: {fileID: 3849006319189691761}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!111 &5683387082430007890
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5617496691037449288}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 7400000, guid: 0e25b7425e1e1e844b6fbbc667f18bd6, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 0e25b7425e1e1e844b6fbbc667f18bd6, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!1 &7039829012538854863
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,7 +333,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: c1bc18c4a4f55624ea75113a4adcc971, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

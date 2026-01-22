@@ -55,7 +55,7 @@ public class WalkingEnemyController : AbstractDamageDealer, IHasTarget, IKnockba
 
         if (_thisHealth.isDead) return;
         _direction = (Target.position + _directionDeviation - transform.position).normalized;
-        _body.LookAt(Target.position + _directionDeviation);
+        transform.LookAt(Target.position + _directionDeviation);
         _characterController.SimpleMove(speed * _direction);
     }
 

@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using VContainer;
+using Random = UnityEngine.Random;
 
-public class ShootingEnemy : MonoBehaviour, IHasTarget
+public class ShootingEnemyController : MonoBehaviour, IHasTarget
 {
     [SerializeField] private Projectile projectilePrefab;
     [SerializeField] private float launchSpeed = 20f;
@@ -15,10 +18,43 @@ public class ShootingEnemy : MonoBehaviour, IHasTarget
     [Inject] public Transform Target { get; set; }
     [SerializeField] private float shootDelay = 1f;
 
+    [SerializeField] private float minimalWalkingDistance = 5f;
+    [SerializeField] private float maximalWalkingDistance = 10f;
+
+    [SerializeField] private float walkingSpeed = 5f;
+
+    private float _walkingDistance;
+
+
+    private void Awake()
+    {
+        _walkingDistance = Random.Range(minimalWalkingDistance, maximalWalkingDistance);
+        walkingSpeed += Random.Range(-1f, 1f);
+    }
+
     private void Start()
     {
         Debug.Log(Target.name);
-        StartCoroutine(ShootingCoroutine());
+        StartCoroutine(WalkingCoroutine());
+    }
+
+    private float _walkedDistance;
+
+    private IEnumerator WalkingCoroutine()
+    {
+        while (true)
+        {
+            var dist = walkingSpeed * Time.deltaTime;
+            transform.position += transform.forward * dist;
+            _walkedDistance += dist;
+            if (_walkedDistance >= _walkingDistance)
+            {
+                StartCoroutine(ShootingCoroutine());
+                break;
+            }
+
+            yield return null;
+        }
     }
 
     private IEnumerator ShootingCoroutine()
