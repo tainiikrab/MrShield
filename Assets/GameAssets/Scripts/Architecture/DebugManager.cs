@@ -8,6 +8,7 @@ public class DebugManager : MonoBehaviour
 
     [SerializeField] private int defaultFPS = 160;
     [SerializeField] private int targetFps = 30;
+    [SerializeField] private float speedUpFactor = 10f;
 
     private void Awake()
     {
@@ -18,6 +19,13 @@ public class DebugManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R)) ReloadScene();
         if (Input.GetKeyDown(KeyCode.L)) ToggleFpsLimit();
+        if (Input.GetKeyDown(KeyCode.Space)) SpeedUp(true);
+        if (Input.GetKeyUp(KeyCode.Space)) SpeedUp(false);
+    }
+
+    public void SpeedUp(bool speedUp)
+    {
+        Time.timeScale = speedUp ? speedUpFactor : 1f;
     }
 
     public void ReloadScene()
