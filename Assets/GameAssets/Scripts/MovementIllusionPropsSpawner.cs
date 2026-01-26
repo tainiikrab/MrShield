@@ -5,9 +5,10 @@ using UnityEngine;
 public class MovementIllusionPropsSpawner : ObjectSpawner
 {
     [SerializeField] private Transform[] prefabs;
-
     [SerializeField] private float speed = 5f;
     [SerializeField] private float lifetime = 20f;
+    [SerializeField] private int initialFillAmount = 50;
+    [SerializeField] private float maxInitialLife = 100;
 
     private Vector3 _forwardMovement;
 
@@ -18,12 +19,16 @@ public class MovementIllusionPropsSpawner : ObjectSpawner
     }
 
     private readonly List<PropData> _props = new();
-    private readonly List<int> _toRemove = new();
+    private bool _isInitialFill;
 
     protected override void Awake()
     {
         base.Awake();
         _forwardMovement = speed * transform.forward;
+
+        _isInitialFill = true;
+        Spawn(initialFillAmount);
+        _isInitialFill = false;
     }
 
     public override void Spawn(int amount)
@@ -32,16 +37,29 @@ public class MovementIllusionPropsSpawner : ObjectSpawner
         {
             var randomPos = GetRandomPos();
             var propPrefab = prefabs[Random.Range(0, prefabs.Length)];
+            var prop = Instantiate(propPrefab, randomPos, Quaternion.identity, transform);
 
-            var prop = Instantiate(propPrefab, randomPos, Quaternion.identity);
+            var remainingLife = lifetime;
+
+            if (_isInitialFill)
+            {
+                var age = Random.Range(0, maxInitialLife);
+                prop.position += _forwardMovement * age;
+                remainingLife = lifetime - age;
+                if (remainingLife <= 0f)
+                {
+                    Destroy(prop.gameObject);
+                    continue;
+                }
+            }
+
             _props.Add(new PropData
             {
                 Transform = prop,
-                DestroyTime = Time.time + lifetime
+                DestroyTime = Time.time + remainingLife
             });
         }
     }
-
 
     private void Update()
     {
