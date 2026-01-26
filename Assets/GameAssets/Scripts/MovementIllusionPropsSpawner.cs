@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class MovementIllusionPropsSpawner : ObjectSpawner
@@ -8,7 +7,7 @@ public class MovementIllusionPropsSpawner : ObjectSpawner
     [SerializeField] private float speed = 5f;
     [SerializeField] private float lifetime = 20f;
     [SerializeField] private int initialFillAmount = 50;
-    [SerializeField] private float maxInitialLife = 100;
+    [SerializeField] private float maxInitialLife = 100f;
 
     private Vector3 _forwardMovement;
 
@@ -19,6 +18,7 @@ public class MovementIllusionPropsSpawner : ObjectSpawner
     }
 
     private readonly List<PropData> _props = new();
+    private readonly Queue<Transform> _pool = new();
     private bool _isInitialFill;
 
     protected override void Awake()
@@ -26,29 +26,71 @@ public class MovementIllusionPropsSpawner : ObjectSpawner
         base.Awake();
         _forwardMovement = speed * transform.forward;
 
+        InitPool(initialFillAmount);
+
         _isInitialFill = true;
         Spawn(initialFillAmount);
         _isInitialFill = false;
+    }
+
+    private void InitPool(int poolSize)
+    {
+        _pool.Clear();
+
+        for (var i = 0; i < poolSize; i++)
+        {
+            var prefab = prefabs[Random.Range(0, prefabs.Length)];
+            var prop = Instantiate(prefab, transform);
+            prop.gameObject.SetActive(false);
+            _pool.Enqueue(prop);
+        }
+    }
+
+    private bool TryGetFromPool(out Transform prop)
+    {
+        if (_pool.Count == 0)
+        {
+            prop = null;
+            return false;
+        }
+
+        prop = _pool.Dequeue();
+        prop.gameObject.SetActive(true);
+        return true;
+    }
+
+    private void ReturnToPool(Transform prop)
+    {
+        prop.gameObject.SetActive(false);
+        prop.SetParent(transform, false);
+        _pool.Enqueue(prop);
     }
 
     public override void Spawn(int amount)
     {
         while (amount-- > 0)
         {
+            if (!TryGetFromPool(out var prop))
+            {
+                Debug.LogWarning("No props in pool");
+                return;
+            }
+
             var randomPos = GetRandomPos();
-            var propPrefab = prefabs[Random.Range(0, prefabs.Length)];
-            var prop = Instantiate(propPrefab, randomPos, Quaternion.identity, transform);
+            prop.position = randomPos;
+            prop.rotation = Quaternion.identity;
 
             var remainingLife = lifetime;
 
             if (_isInitialFill)
             {
-                var age = Random.Range(0, maxInitialLife);
+                var age = Random.Range(0f, maxInitialLife);
                 prop.position += _forwardMovement * age;
                 remainingLife = lifetime - age;
+
                 if (remainingLife <= 0f)
                 {
-                    Destroy(prop.gameObject);
+                    ReturnToPool(prop);
                     continue;
                 }
             }
@@ -69,11 +111,9 @@ public class MovementIllusionPropsSpawner : ObjectSpawner
         {
             var p = _props[i];
 
-            if (p.Transform == null || now >= p.DestroyTime)
+            if (now >= p.DestroyTime)
             {
-                if (p.Transform != null)
-                    Destroy(p.Transform.gameObject);
-
+                ReturnToPool(p.Transform);
                 _props.RemoveAt(i);
             }
             else
