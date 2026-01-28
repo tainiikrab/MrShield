@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementIllusionPropsSpawner : ObjectSpawner
+public class MovingObjectsSpawner : ObjectSpawner
 {
     [SerializeField] private Transform[] prefabs;
     [SerializeField] private float speed = 5f;
@@ -9,6 +9,7 @@ public class MovementIllusionPropsSpawner : ObjectSpawner
     [SerializeField] private int initialFillAmount = 50;
     [SerializeField] private float maxInitialLife = 100f;
 
+    [SerializeField] private bool isPrewarmed = true;
     private Vector3 _forwardMovement;
 
     private struct PropData
@@ -29,7 +30,8 @@ public class MovementIllusionPropsSpawner : ObjectSpawner
         InitPool(initialFillAmount);
 
         _isInitialFill = true;
-        Spawn(initialFillAmount);
+        if (isPrewarmed)
+            Spawn(initialFillAmount);
         _isInitialFill = false;
     }
 
@@ -82,7 +84,7 @@ public class MovementIllusionPropsSpawner : ObjectSpawner
 
             var remainingLife = lifetime;
 
-            if (_isInitialFill)
+            if (_isInitialFill && isPrewarmed)
             {
                 var age = Random.Range(0f, maxInitialLife);
                 prop.position += _forwardMovement * age;
