@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class MovingObjectsSpawner : ObjectSpawner
@@ -10,6 +12,7 @@ public class MovingObjectsSpawner : ObjectSpawner
     [SerializeField] private float maxInitialLife = 100f;
 
     [SerializeField] private bool isPrewarmed = true;
+    [SerializeField] private float fadeDuration = 1f;
     private Vector3 _forwardMovement;
 
     private struct PropData
@@ -58,6 +61,8 @@ public class MovingObjectsSpawner : ObjectSpawner
 
         prop = _pool.Dequeue();
         prop.gameObject.SetActive(true);
+        if (!_isInitialFill || !isPrewarmed)
+            FadeInAsync(prop, fadeDuration).Forget();
         return true;
     }
 
@@ -123,5 +128,100 @@ public class MovingObjectsSpawner : ObjectSpawner
                 p.Transform.position += _forwardMovement * Time.deltaTime;
             }
         }
+    }
+
+    private async UniTaskVoid FadeInAsync(Transform prop, float duration)
+    {
+        var renderers = prop.GetComponentsInChildren<Renderer>(true);
+        var n = renderers.Length;
+        if (n == 0 || duration <= 0f)
+        {
+            foreach (var r0 in renderers)
+            {
+                var mpb0 = new MaterialPropertyBlock();
+                if (TryGetColorPropName(r0, out var pname, out var baseColor))
+                {
+                    baseColor.a = 1f;
+                    mpb0.SetColor(pname, baseColor);
+                    r0.SetPropertyBlock(mpb0);
+                }
+            }
+
+            return;
+        }
+        var origColors = new Color[n];
+        var propNames = new string[n];
+        var blocks = new MaterialPropertyBlock[n];
+        for (var i = 0; i < n; i++)
+        {
+            var r = renderers[i];
+            if (TryGetColorPropName(r, out var pname, out var baseColor))
+            {
+                propNames[i] = pname;
+                origColors[i] = baseColor;
+            }
+            else
+            {
+                propNames[i] = "_Color";
+                origColors[i] = Color.white;
+            }
+
+            blocks[i] = new MaterialPropertyBlock();
+            var c0 = origColors[i];
+            c0.a = 0f;
+            blocks[i].SetColor(propNames[i], c0);
+            r.SetPropertyBlock(blocks[i]);
+        }
+
+        var t = 0f;
+        while (t < duration)
+        {
+            await UniTask.Yield(PlayerLoopTiming.Update);
+            t += Time.deltaTime;
+            var a = Mathf.Clamp01(t / duration);
+
+            for (var i = 0; i < n; i++)
+            {
+                var c = origColors[i];
+                c.a = a;
+                blocks[i].SetColor(propNames[i], c);
+                if (renderers[i] != null)
+                    renderers[i].SetPropertyBlock(blocks[i]);
+            }
+        }
+        
+        for (var i = 0; i < n; i++)
+        {
+            var c = origColors[i];
+            c.a = 1f;
+            blocks[i].SetColor(propNames[i], c);
+            renderers[i].SetPropertyBlock(blocks[i]);
+        }
+    }
+    
+    private static bool TryGetColorPropName(Renderer r, out string propName, out Color baseColor)
+    {
+        propName = null;
+        baseColor = Color.white;
+        if (r == null) return false;
+
+        var mat = r.sharedMaterial;
+        if (mat == null) return false;
+
+        if (mat.HasProperty("_BaseColor"))
+        {
+            propName = "_BaseColor";
+            baseColor = mat.GetColor("_BaseColor");
+            return true;
+        }
+
+        if (mat.HasProperty("_Color"))
+        {
+            propName = "_Color";
+            baseColor = mat.GetColor("_Color");
+            return true;
+        }
+
+        return false;
     }
 }
